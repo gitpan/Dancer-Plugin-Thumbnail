@@ -20,7 +20,7 @@ get '/original' => sub {
 # resize
 get '/resize/:w/:h/:s' => sub {
 	thumbnail 'lonerr.jpg' => [
-		resize => { w => param('w'), h => param('h'), scale => param('s') }
+		resize => { w => param('w'), h => param('h'), s => param('s') }
 	];
 };
 get '/resize/:w/:h' => sub {
@@ -36,7 +36,7 @@ get '/sresize/:w/:h' => sub {
 # crop
 get '/crop/:w/:h/:a' => sub {
 	thumbnail 'lonerr.jpg' => [
-		crop => { w => param('w'), h => param('h'), anchors => param('a') }
+		crop => { w => param('w'), h => param('h'), a => param('a') }
 	];
 };
 get '/crop/:w/:h' => sub {
@@ -75,12 +75,12 @@ get '/compression/:w/:h/:c' => sub {
 get '/multiple/1' => sub {
 	thumbnail 'lonerr.jpg' => [
 		resize => { w => '100' },
-		crop   => { h => '25', anchors => 'lt' },
+		crop   => { h => '25', a => 'lt' },
 	], { quality => 60 }
 };
 get '/multiple/2' => sub {
 	thumbnail 'lonerr.jpg' => [
-		crop   => { h => '25', anchors => 'lt' },
+		crop   => { h => '25', a => 'lt' },
 		resize => { w => '100' },
 	], { format => 'png', compression => 5 }
 };

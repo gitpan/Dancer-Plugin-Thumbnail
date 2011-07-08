@@ -1,5 +1,9 @@
 Revision history for Dancer-Plugin-Thumbnail
 
+0.02    2011-07-08
+        * Aliases (shortcuts) for operation arguments.
+        * POD fixes.
+
 0.01    2011-07-07
         First version, released on an unsuspecting world.
 

@@ -2,7 +2,7 @@ package Dancer::Plugin::Thumbnail;
 
 =head1 NAME
 
-Dancer::Plugin::Thumbnail - Make images thumbnails with Dancer and GD
+Dancer::Plugin::Thumbnail - Easy thumbnails creating with Dancer and GD
 
 =cut
 
@@ -20,11 +20,11 @@ use POSIX 'strftime';
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 =head1 SYNOPSIS
@@ -34,19 +34,19 @@ our $VERSION = '0.01';
 
  # simple resize
  get '/resized/:width/:image' => sub {
-     resize param('image') => { width => param 'width' };
+     resize param('image') => { w => param 'width' };
  }
 
  # simple crop
  get '/cropped/:width/:image' => sub {
-     crop param('image') => { width => param 'width' };
+     crop param('image') => { w => param 'width' };
  }
 
  # more complex
  get '/thumb/:width/:height/:image' => sub {
      thumbnail param('image') => [
-         crop   => { width => 200, height => 200, scale => 'min' },
-         resize => { width => param('w'), height => param('h') },
+         crop   => { w => 200, h => 200, scale => 'min' },
+         resize => { w => param('w'), h => param('h') },
      ], { format => 'jpeg', quality => 90 };
  }
 
@@ -74,7 +74,7 @@ Cache path is generated from original file name, its modification time,
 operations with arguments and an options. If you are worried about cache
 garbage collecting you can create a simple cron job like:
 
-find /cache/path -type f -not -newerat '1 week ago' -delete
+ find /cache/path -type f -not -newerat '1 week ago' -delete
 
 =item format
 
@@ -94,14 +94,13 @@ Default is 'undef' (default GD quality for JPEG creation).
 
 =back
 
-All these options can be specified in config.yml:
-    plugins:
-      Thumbnail:
-        cache: var/cache
-        compression: 7
-        quality: 50
+Defaults for these options can be specified in config.yml:
 
-Any time you can override config options with an operation arguments.
+ plugins:
+     Thumbnail:
+         cache: var/cache
+         compression: 7
+         quality: 50
 
 =cut
 
@@ -225,11 +224,12 @@ sub thumbnail {
 		my ($op,$args) = @$opers[$i,$i+1];
 
 		# target sizes
-		my ($dst_w,$dst_h) = map { $_ || 0 } @{ $args }{'w','h'};
+		my $dst_w = $args->{ w } || $args->{ width };
+		my $dst_h = $args->{ h } || $args->{ height };
 
 		given ( $op ) {
 			when ('resize') {
-				my $scale_mode = $args->{ scale } || 'max';
+				my $scale_mode = $args->{ s } || $args->{ scale } || 'max';
 				do {
 					error "unknown scale mode '$scale_mode'";
 					status 500;
@@ -264,7 +264,8 @@ sub thumbnail {
 				$dst_h = min $src_h, $dst_h || $src_h;
 
 				# anchors
-				my ($h_anchor,$v_anchor) = ( $args->{ anchors } || 'cm' ) =~
+				my ($h_anchor,$v_anchor) =
+					( $args->{ a } || $args->{ anchors } || 'cm' ) =~
 					/^([lcr])([tmb])$/ or do {
 					error "invalid anchors: '$args->{ anchors }'";
 					status 500;
@@ -372,15 +373,15 @@ Arguments includes:
 
 =over
 
-=item height
-
-Desired height (optional, default not to crop by vertical).
-
-=item width
+=item w | width
 
 Desired width (optional, default not to crop by horizontal).
 
-=item anchors
+=item h | height
+
+Desired height (optional, default not to crop by vertical).
+
+=item a | anchors
 
 Two characters string which indicates desired fragment of original image.
 First character can be one of 'l/c/r' (left/right/center), and second - 't/m/b'
@@ -406,15 +407,15 @@ Arguments includes:
 
 =over
 
-=item height
-
-Desired height (optional, default not to resize by vertical).
-
-=item width
+=item w | width
 
 Desired width (optional, default not to resize by horizontal).
 
-=item scale
+=item h | height
+
+Desired height (optional, default not to resize by vertical).
+
+=item s | scale
 
 The operation always keeps original image proportions.
 Horizontal and vertical scales calculates separately and 'scale' argument
