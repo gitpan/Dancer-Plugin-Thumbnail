@@ -4,37 +4,58 @@ use lib::abs 'lib';
 use Dancer::Test;
 use Image::Size 'imgsize';
 use MyApp;
-use Test::More tests => 5;
+use Test::More tests => 13;
 
 
-my $x;
+my @t = (
+	{
+		n => 'default',
+		u => '/resize/50/100',
+		t => 'image/jpeg',
+		s => 1393,
+		g => '50x38',
+	},
+	{
+		n => 'min scale',
+		u => '/resize/50/100/min',
+		t => 'image/jpeg',
+		s => 3967,
+		g => '133x100',
+	},
+	{
+		n => 'shortcut',
+		u => '/sresize/50/100',
+		t => 'image/jpeg',
+		s => 1393,
+		g => '50x38',
+	},
+);
 
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/resize/50/100' )->content );
-};
-# 1393
-ok $x > 1380 && $x < 1410, 'size';
+#
+# main
+#
+for ( @t ) {
+	# status
+	response_status_is [ GET => $_->{u} ] => 200,
+		$_->{n} . ' status';
 
-is sprintf(
-	'%dx%d', imgsize \dancer_response( GET => '/resize/50/100' )->content
-) => '50x38',
-	'default scale'
-;
+	# type
+	response_headers_include [ GET => $_->{u} ] => ['Content-Type' => $_->{t}],
+		$_->{n} . ' type';
 
-is sprintf(
-	'%dx%d', imgsize \dancer_response( GET => '/resize/50/100/min' )->content
-) => '133x100',
-	'min scale'
-;
+	# size
+	my $x = do { local $/ = length (dancer_response(GET => $_->{u})->content) };
+	ok $x > $_->{s} - 10 && $x < $_->{s} + 10,
+		$_->{n} . ' size' or warn $x;
 
-response_status_is
-	[ GET => '/resize/50/100/none' ] => 500,
-	'invalid scale'
-;
+	# geometry
+	is sprintf( '%dx%d', imgsize \dancer_response(GET => $_->{u})->content ) =>
+		$_->{g}, $_->{n} . ' geometry';
+}
 
-is sprintf(
-	'%dx%d', imgsize \dancer_response( GET => '/sresize/50/100' )->content
-) => '50x38',
-	'shortcut';
+#
+# custom
+#
+response_status_is [ GET => '/resize/50/100/none' ] => 500,
+	'invalid scale status';
 

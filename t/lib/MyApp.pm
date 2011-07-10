@@ -4,7 +4,7 @@ use FindBin;
 use Dancer;
 use Dancer::Plugin::Thumbnail;
 
-config->{ public } = path $FindBin::RealBin, 'public';
+set public => path $FindBin::RealBin, 'public';
 
 
 # just '200 OK'

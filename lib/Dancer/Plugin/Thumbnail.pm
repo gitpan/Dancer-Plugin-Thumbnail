@@ -24,7 +24,7 @@ Version 0.02
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 
 =head1 SYNOPSIS
@@ -43,10 +43,10 @@ our $VERSION = '0.02';
  }
 
  # more complex
- get '/thumb/:width/:height/:image' => sub {
+ get '/thumb/:w/:h/:image' => sub {
      thumbnail param('image') => [
-         crop   => { w => 200, h => 200, scale => 'min' },
-         resize => { w => param('w'), h => param('h') },
+         crop   => { w => 200, h => 200, a => 'lt' },
+         resize => { w => param('w'), h => param('h'), s => 'min' },
      ], { format => 'jpeg', quality => 90 };
  }
 
@@ -59,7 +59,8 @@ Makes thumbnail image from original file by chain of graphic operations.
 Image file name may be an absolute path or relative from config->{'public'}.
 Each operation is a reference for two elements array. First element
 is an operation name (currently supported 'resize' and 'crop') and second is
-operation arguments (described in appropriate operation section).
+operation arguments as hash reference (described in appropriate operation
+section).
 
 After operations chain completed final image creates with supplied options:
 
@@ -385,8 +386,7 @@ Desired height (optional, default not to crop by vertical).
 
 Two characters string which indicates desired fragment of original image.
 First character can be one of 'l/c/r' (left/right/center), and second - 't/m/b'
-(top/middle/bottom).
-Default is 'cm' (center by horizontal and middle by vertical).
+(top/middle/bottom). Default is 'cm' (centered by horizontal and vertical).
 
 =back
 

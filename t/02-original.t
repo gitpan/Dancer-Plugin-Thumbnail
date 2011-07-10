@@ -7,8 +7,7 @@ use MyApp;
 use Test::More tests => 4;
 
 
-response_status_is
-	[ GET => '/original' ] => 200,
+response_status_is [ GET => '/original' ] => 200,
 	'status';
 
 response_headers_include

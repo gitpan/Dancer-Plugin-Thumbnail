@@ -4,36 +4,59 @@ use lib::abs 'lib';
 use Dancer::Test;
 use Image::Size 'imgsize';
 use MyApp;
-use Test::More tests => 4;
+use Test::More tests => 16;
 
 
-my $x;
+my @t = (
+	{
+		n => 'none',
+		u => '/compression/50/100/0',
+		t => 'image/png',
+		s => 5806,
+		g => '50x38',
+	},
+	{
+		n => 'low',
+		u => '/compression/50/100/1',
+		t => 'image/png',
+		s => 4477,
+		g => '50x38',
+	},
+	{
+		n => 'medium',
+		u => '/compression/50/100/5',
+		t => 'image/png',
+		s => 4412,
+		g => '50x38',
+	},
+	{
+		n => 'high',
+		u => '/compression/50/100/9',
+		t => 'image/png',
+		s => 4411,
+		g => '50x38',
+	},
+);
 
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/compression/50/100/0' )->content );
-};
-# 5806
-ok $x > 5790 && $x < 5820, 'none';
+#
+# main
+#
+for ( @t ) {
+	# status
+	response_status_is [ GET => $_->{u} ] => 200,
+		$_->{n} . ' status';
 
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/compression/50/100/1' )->content );
-};
-# 4477
-ok $x > 4460 && $x < 4490, 'low';
+	# type
+	response_headers_include [ GET => $_->{u} ] => ['Content-Type' => $_->{t}],
+		$_->{n} . ' type';
 
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/compression/50/100/5' )->content );
-};
-# 4412
-ok $x > 4400 && $x < 4430, 'medium';
+	# size
+	my $x = do { local $/ = length (dancer_response(GET => $_->{u})->content) };
+	ok $x > $_->{s} - 10 && $x < $_->{s} + 10,
+		$_->{n} . ' size' or warn $x;
 
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/compression/50/100/9' )->content );
-};
-# 4411
-ok $x > 4400 && $x < 4430, 'high';
+	# geometry
+	is sprintf( '%dx%d', imgsize \dancer_response(GET => $_->{u})->content ) =>
+		$_->{g}, $_->{n} . ' geometry';
+}
 

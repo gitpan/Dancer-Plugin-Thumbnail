@@ -4,56 +4,59 @@ use lib::abs 'lib';
 use Dancer::Test;
 use Image::Size 'imgsize';
 use MyApp;
-use Test::More tests => 8;
+use Test::More tests => 16;
 
 
-my $x;
+my @t = (
+	{
+		n => 'auto',
+		u => '/format/50/100/auto',
+		t => 'image/jpeg',
+		s => 1393,
+		g => '50x38',
+	},
+	{
+		n => 'jpeg',
+		u => '/format/50/100/jpeg',
+		t => 'image/jpeg',
+		s => 1393,
+		g => '50x38',
+	},
+	{
+		n => 'png',
+		u => '/format/50/100/png',
+		t => 'image/png',
+		s => 4411,
+		g => '50x38',
+	},
+	{
+		n => 'gif',
+		u => '/format/50/100/gif',
+		t => 'image/gif',
+		s => 2775,
+		g => '50x38',
+	},
+);
 
-response_headers_include
-	[ GET => '/format/50/100/auto' ] => [ 'Content-Type' => 'image/jpeg' ],
-	'type (auto)'
-;
+#
+# main
+#
+for ( @t ) {
+	# status
+	response_status_is [ GET => $_->{u} ] => 200,
+		$_->{n} . ' status';
 
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/format/50/100/auto' )->content );
-};
-# 1393
-ok $x > 1380 && $x < 1410, 'size (auto)';
+	# type
+	response_headers_include [ GET => $_->{u} ] => ['Content-Type' => $_->{t}],
+		$_->{n} . ' type';
 
-response_headers_include
-	[ GET => '/format/50/100/jpeg' ] => [ 'Content-Type' => 'image/jpeg' ],
-	'type (jpeg)'
-;
+	# size
+	my $x = do { local $/ = length (dancer_response(GET => $_->{u})->content) };
+	ok $x > $_->{s} - 10 && $x < $_->{s} + 10,
+		$_->{n} . ' size' or warn $x;
 
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/format/50/100/jpeg' )->content );
-};
-# 1393
-ok $x > 1380 && $x < 1410, 'size (jpeg)';
-
-response_headers_include
-	[ GET => '/format/50/100/png' ] => [ 'Content-Type' => 'image/png' ],
-	'type (png)'
-;
-
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/format/50/100/png' )->content );
-};
-# 4411
-ok $x > 4400 && $x < 4430, 'size (png)';
-
-response_headers_include
-	[ GET => '/format/50/100/gif' ] => [ 'Content-Type' => 'image/gif' ],
-	'type (gif)'
-;
-
-$x = do {
-	local $/;
-	length ( dancer_response( GET => '/format/50/100/gif' )->content );
-};
-# 2775
-ok $x > 2760 && $x < 2790, 'size (gif)';
+	# geometry
+	is sprintf( '%dx%d', imgsize \dancer_response(GET => $_->{u})->content ) =>
+		$_->{g}, $_->{n} . ' geometry';
+}
 
