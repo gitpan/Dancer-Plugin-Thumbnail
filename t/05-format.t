@@ -12,28 +12,28 @@ my @t = (
 		n => 'auto',
 		u => '/format/50/100/auto',
 		t => 'image/jpeg',
-		s => 1393,
+		s => [ 1383, 2003 ],
 		g => '50x38',
 	},
 	{
 		n => 'jpeg',
 		u => '/format/50/100/jpeg',
 		t => 'image/jpeg',
-		s => 1393,
+		s => [ 1383, 2003 ],
 		g => '50x38',
 	},
 	{
 		n => 'png',
 		u => '/format/50/100/png',
 		t => 'image/png',
-		s => 4411,
+		s => [ 4401, 4421 ],
 		g => '50x38',
 	},
 	{
 		n => 'gif',
 		u => '/format/50/100/gif',
 		t => 'image/gif',
-		s => 2775,
+		s => [ 2741, 2785 ],
 		g => '50x38',
 	},
 );
@@ -52,8 +52,8 @@ for ( @t ) {
 
 	# size
 	my $x = do { local $/ = length (dancer_response(GET => $_->{u})->content) };
-	ok $x > $_->{s} - 10 && $x < $_->{s} + 10,
-		$_->{n} . ' size' or warn $x;
+	ok $x >= $_->{s}[0] && $x <= $_->{s}[1],
+		$_->{n} . ' size [' . $x . ']';
 
 	# geometry
 	is sprintf( '%dx%d', imgsize \dancer_response(GET => $_->{u})->content ) =>

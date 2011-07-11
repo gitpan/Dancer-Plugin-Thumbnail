@@ -12,14 +12,14 @@ my @t = (
 		n => 'no.1',
 		u => '/multiple/1',
 		t => 'image/jpeg',
-		s => 1285,
+		s => [ 1271, 1295 ],
 		g => '100x25',
 	},
 	{
 		n => 'no.2',
 		u => '/multiple/2',
 		t => 'image/png',
-		s => 860,
+		s => [ 850, 870 ],
 		g => '100x4',
 	},
 );
@@ -38,8 +38,8 @@ for ( @t ) {
 
 	# size
 	my $x = do { local $/ = length (dancer_response(GET => $_->{u})->content) };
-	ok $x > $_->{s} - 10 && $x < $_->{s} + 10,
-		$_->{n} . ' size' or warn $x;
+	ok $x >= $_->{s}[0] && $x <= $_->{s}[1],
+		$_->{n} . ' size [' . $x . ']';
 
 	# geometry
 	is sprintf( '%dx%d', imgsize \dancer_response(GET => $_->{u})->content ) =>
