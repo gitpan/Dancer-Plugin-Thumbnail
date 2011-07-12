@@ -7,7 +7,7 @@ license  'perl';
 
 perl_version '5.010';
 
-requires 'Dancer';
+requires 'Dancer' => '1.3030';
 requires 'File::Spec';
 requires 'GD';
 requires 'JSON::Any';

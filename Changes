@@ -1,5 +1,10 @@
 Revision history for Dancer-Plugin-Thumbnail
 
+0.05    2011-07-12
+        * t/05-format.t fixed for 'gif size'
+        * Required Dancer version set to 1.3030
+          (&Dancer::Test::response_headers_include was implemented).
+
 0.04    2011-07-11
         * Tests enhancements.
 
