@@ -10,7 +10,6 @@ use feature 'switch';
 use Dancer ':syntax';
 use Dancer::MIME;
 use Dancer::Plugin;
-use File::Spec::Functions qw( catfile catdir );
 use GD::Image;
 use JSON::Any;
 use List::Util qw( min max );
@@ -20,11 +19,11 @@ use POSIX 'strftime';
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 =head1 SYNOPSIS
@@ -118,7 +117,7 @@ sub thumbnail {
 	}
 
 	# create an absolute path
-	$file = catfile config->{ public }, $file
+	$file = path config->{ public }, $file
 		unless $file =~ m{^/};
 
 	# check for file existance and readabilty
@@ -166,7 +165,7 @@ sub thumbnail {
 
 	if ( $cache_dir ) {
 		# check for an absolute path of cache directory
-		$cache_dir = catdir config->{ appdir }, $cache_dir
+		$cache_dir = path config->{ appdir }, $cache_dir
 			unless $cache_dir =~ m{^/};
 
 		# check for existance of cache directory
@@ -184,7 +183,7 @@ sub thumbnail {
 			[ $file,$stat[9],$opers,$quality,$compression ]
 		);
 		@cache_hier = map { substr $cache_key,$_->[0],$_->[1] } [0,1],[1,2];
-		$cache_file = catfile $cache_dir,@cache_hier,$cache_key;
+		$cache_file = path $cache_dir,@cache_hier,$cache_key;
 
 		# try to get cached version
 		if ( -f $cache_file ) {
@@ -328,7 +327,7 @@ sub thumbnail {
 	if ( $cache_file ) {
 		# create cache subdirectories
 		for ( @cache_hier ) {
-			next if -d ( $cache_dir = catdir $cache_dir,$_ );
+			next if -d ( $cache_dir = path $cache_dir,$_ );
 			mkdir $cache_dir or do {
 				error "can't create cache directory '$cache_dir'";
 				status 500;

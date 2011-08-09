@@ -22,8 +22,7 @@ no_index:
     - inc
     - t
 requires:
-  Dancer: 1.3030
-  File::Spec: 0
+  Dancer: 1.3071
   GD: 0
   JSON::Any: 0
   List::Util: 0
@@ -32,4 +31,4 @@ requires:
   perl: 5.10.0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.05
+version: 0.06
