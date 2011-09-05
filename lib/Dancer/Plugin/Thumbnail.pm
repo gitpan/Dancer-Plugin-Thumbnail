@@ -19,11 +19,11 @@ use POSIX 'strftime';
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 
 =head1 SYNOPSIS
@@ -187,8 +187,6 @@ sub thumbnail {
 
 		# try to get cached version
 		if ( -f $cache_file ) {
-			debug "hit for '$file'";
-
 			open FH, '<:raw', $cache_file or do {
 				error "can't read cache file '$cache_file'";
 				status 500;
