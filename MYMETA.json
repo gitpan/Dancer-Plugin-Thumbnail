@@ -1,11 +1,10 @@
 {
    "abstract" : "Easy thumbnails creating with Dancer and GD",
    "author" : [
-      "Oleg A. Mamontov, C<< <oleg at mamontov.net> >>",
-      "Oleg A. Mamontov <oleg@mamontov.net>"
+      "Oleg A. Mamontov, C<< <oleg at mamontov.net> >>, Oleg A. Mamontov <oleg@mamontov.net>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Module::Install version 1.06, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -16,8 +15,8 @@
    "name" : "Dancer-Plugin-Thumbnail",
    "no_index" : {
       "directory" : [
-         "inc",
-         "t"
+         "t",
+         "inc"
       ]
    },
    "prereqs" : {
@@ -31,7 +30,7 @@
       },
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.59"
+            "ExtUtils::MakeMaker" : "0"
          }
       },
       "runtime" : {
@@ -47,10 +46,5 @@
       }
    },
    "release_status" : "stable",
-   "resources" : {
-      "license" : [
-         "http://dev.perl.org/licenses/"
-      ]
-   },
-   "version" : "0.07"
+   "version" : "0.09"
 }

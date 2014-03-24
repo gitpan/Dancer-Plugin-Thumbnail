@@ -1,17 +1,16 @@
 ---
 abstract: 'Easy thumbnails creating with Dancer and GD'
 author:
-  - 'Oleg A. Mamontov, C<< <oleg at mamontov.net> >>'
-  - 'Oleg A. Mamontov <oleg@mamontov.net>'
+  - 'Oleg A. Mamontov, C<< <oleg at mamontov.net> >>, Oleg A. Mamontov <oleg@mamontov.net>'
 build_requires:
   ExtUtils::MakeMaker: 6.59
   Image::Size: 0
   Test::More: 0
   lib::abs: 0
 configure_requires:
-  ExtUtils::MakeMaker: 6.59
+  ExtUtils::MakeMaker: 0
 dynamic_config: 0
-generated_by: 'Module::Install version 1.06, CPAN::Meta::Converter version 2.120921'
+generated_by: 'ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -19,8 +18,8 @@ meta-spec:
 name: Dancer-Plugin-Thumbnail
 no_index:
   directory:
-    - inc
     - t
+    - inc
 requires:
   Dancer: 1.3071
   GD: 0
@@ -29,6 +28,4 @@ requires:
   Object::Signature: 0
   POSIX: 0
   perl: 5.010
-resources:
-  license: http://dev.perl.org/licenses/
-version: 0.07
+version: 0.09
