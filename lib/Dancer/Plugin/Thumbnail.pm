@@ -6,7 +6,6 @@ Dancer::Plugin::Thumbnail - Easy thumbnails creating with Dancer and GD
 
 =cut
 
-use feature 'switch';
 use Dancer ':syntax';
 use Dancer::MIME;
 use Dancer::Plugin;
@@ -19,11 +18,11 @@ use POSIX 'strftime';
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 
 =head1 SYNOPSIS
@@ -225,14 +224,14 @@ sub thumbnail {
 		my $dst_w = $args->{ w } || $args->{ width };
 		my $dst_h = $args->{ h } || $args->{ height };
 
-		given ( $op ) {
-			when ('resize') {
+		for ( $op ) {
+			if ( $_ eq 'resize') {
 				my $scale_mode = $args->{ s } || $args->{ scale } || 'max';
 				do {
 					error "unknown scale mode '$scale_mode'";
 					status 500;
 					return '500 Internal Server Error';
-				} unless $scale_mode ~~ ['max','min'];
+				} unless $scale_mode eq 'max' || $scale_mode eq 'min';
 
 				# calculate scale
 				no strict 'refs';
@@ -257,7 +256,7 @@ sub thumbnail {
 					$dst_w,$dst_h,$src_w,$src_h
 				);
 			}
-			when ('crop') {
+			elsif ( $_ eq 'crop' ) {
 				$dst_w = min $src_w, $dst_w || $src_w;
 				$dst_h = min $src_h, $dst_h || $src_h;
 
@@ -292,7 +291,7 @@ sub thumbnail {
 					$dst_w,$dst_h
 				);
 			}
-			default {
+			else {
 				error "unknown operation '$op'";
 				status 500;
 				return '500 Internal Server Error';
@@ -304,17 +303,17 @@ sub thumbnail {
 	}
 
 	# generate image
-	given ( $fmt ) {
-		when ('gif') {
+	for ( $fmt ) {
+		if ( $_ eq 'gif' ) {
 			$dst_bytes = $dst_img->$_;
 		}
-		when ('jpeg') {
+		elsif ( $_ eq 'jpeg' ) {
 			$dst_bytes = $quality ? $dst_img->$_( $quality ) : $dst_img->$_;
 		}
-		when ('png') {
+		elsif ( $_ eq 'png' ) {
 			$dst_bytes = $dst_img->$_( $compression );
 		}
-		default {
+		else {
 			error "unknown format '$_'";
 			status 500;
 			return '500 Internal Server Error';

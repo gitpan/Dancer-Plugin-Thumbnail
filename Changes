@@ -1,5 +1,8 @@
 Revision history for Dancer-Plugin-Thumbnail
 
+0.08    2014-03-24
+        * Removed 'experimental' features ('smartmatch' and 'switch').
+
 0.07    2011-09-05
         * Removed annoying debug message.
 
