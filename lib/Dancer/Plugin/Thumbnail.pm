@@ -18,11 +18,11 @@ use POSIX 'strftime';
 
 =head1 VERSION
 
-Version 0.09
+Version 0.10
 
 =cut
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
 =head1 SYNOPSIS
@@ -109,7 +109,7 @@ sub thumbnail {
 	# load settings
 	my $conf = plugin_setting;
 
-	# create absolute path
+	# file argument is required
 	unless ( $file ) {
 		status 404;
 		return '404 Not Found';
@@ -152,7 +152,9 @@ sub thumbnail {
 
 	# target options
 	my $compression = $fmt eq 'png' ?
-		$opts->{ compression } // $conf->{ compression } // -1 : 0;
+		defined $opts->{ compression } ? $opts->{ compression } :
+		defined $conf->{ compression } ? $conf->{ compression } :
+		-1 : 0;
 	my $quality = $fmt eq 'jpeg' ?
 		( exists $opts->{ quality } ?
 			$opts->{ quality } :

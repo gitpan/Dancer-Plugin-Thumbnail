@@ -5,7 +5,7 @@ all_from 'lib/Dancer/Plugin/Thumbnail.pm';
 author   q{Oleg A. Mamontov <oleg@mamontov.net>};
 license  'perl';
 
-perl_version '5.010';
+perl_version '5.008';
 
 requires 'Dancer' => '1.3071';
 requires 'GD';

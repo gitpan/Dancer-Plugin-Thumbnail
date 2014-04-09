@@ -1,5 +1,10 @@
 Revision history for Dancer-Plugin-Thumbnail
 
+0.10    2014-04-09
+        * Adopted to pre 5.008
+        * Fixed cunfusing comment
+        * Fixed tests for some libgd versions
+
 0.09    2014-03-24
         * Bump version.
 
